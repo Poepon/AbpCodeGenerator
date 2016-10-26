@@ -1,0 +1,42 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../../../../../../Web.t4" #>
+<#@ include file="../../../../../../../CSharpHelpers.t4" #>
+<#@ output extension="js" #>
+<#
+    var entityName = ToCamelCase(EntityName);
+#>
+(function () {
+    app.modals.CreateOrEdit<#=EntityName#>Modal = function () {
+
+        var _modalManager;
+        var _<#=entityName#>Service = abp.services.app.<#=entityName#>;
+        var _$<#=entityName#>InformationForm = null;
+
+        this.init = function (modalManager) {
+            _modalManager = modalManager;
+
+
+            _$<#=entityName#>InformationForm = _modalManager.getModal().find('form[name=<#=EntityName#>InformationsForm]');
+            _$<#=entityName#>InformationForm.validate({ ignore: "" });
+        };
+
+        this.save = function () {
+            if (!_$<#=entityName#>InformationForm.valid()) {
+                return;
+            }
+
+            var <#=entityName#> = _$<#=entityName#>InformationForm.serializeFormToObject();
+
+            _modalManager.setBusy(true);
+            _<#=entityName#>Service.createOrUpdate<#=EntityName#>({
+                <#=entityName#>: <#=entityName#>
+            }).done(function () {
+                abp.notify.info(app.localize('SavedSuccessfully'));
+                _modalManager.close();
+                abp.event.trigger('app.createOrEdit<#=EntityName#>ModalSaved');
+            }).always(function () {
+                _modalManager.setBusy(false);
+            });
+        };
+    };
+})();

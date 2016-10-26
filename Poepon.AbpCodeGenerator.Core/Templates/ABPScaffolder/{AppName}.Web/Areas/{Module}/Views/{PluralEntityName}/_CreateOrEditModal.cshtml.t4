@@ -1,0 +1,30 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../../../../Web.t4" #>
+<#@ output extension="cshtml" #>
+@using Abp.Extensions
+@using <#=AppName#>.Web.Areas.Admin.Models.Common.Modals
+@using <#=AppName#>.Web.Areas.Admin.Models.<#=PluralEntityName#>
+@model CreateOrEdit<#=EntityName#>ModalViewModel
+
+@Html.Partial("~/Areas/Admin/Views/Common/Modals/_ModalHeader.cshtml", new ModalHeaderViewModel(Model.IsEditMode ? (L("Edit<#=EntityName#>") + ": " ) : L("CreateNew<#=EntityName#>")))
+<div class="modal-body">
+    <form name="<#=EntityName#>InformationsForm" role="form" novalidate class="form-validation">
+        @if (Model.IsEditMode)
+        {
+            <input type="hidden" name="Id" value="@Model.<#=EntityName#>.Id" />
+        }
+        <#
+			foreach (MetaColumnInfo column in DtoMetaTable.Columns)
+			{
+			if (!column.IsDtoVisible) continue;
+			#>
+				 <div class="form-group">
+					<input class="form-control@(Model.IsEditMode ? " edited" : "")" value="@Model.<#=EntityName#>.<#=column.Name#>" type="text" name="<#=column.Name#>" <#=column.Required?"required":""#> maxlength="128">
+					<label><#=column.DisplayName#></label>
+				</div>
+				<#
+			}
+		#>
+    </form>
+</div>
+@Html.Partial("~/Areas/Admin/Views/Common/Modals/_ModalFooterWithSaveAndCancel.cshtml")

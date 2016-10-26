@@ -1,0 +1,42 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../../../Web.t4" #>
+<#@ include file="../../../../CSharpHelpers.t4" #>
+<#@ output extension="cs" #>
+<#
+    var entityName = ToCamelCase(EntityName);
+#>
+using System.Threading.Tasks;
+using Abp.Application.Services.Dto;
+using Abp.AspNetCore.Mvc.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using <#=AppName#>.Address.Country;
+using <#=AppName#>.Authorization;
+using <#=AppName#>.Web.Areas.Admin.Models.<#=PluralEntityName#>;
+using <#= AppName #>.<#=EntityFolerName#>;
+namespace <#=AppName#>.Web.Areas.Admin.Controllers
+{
+    //[AbpMvcAuthorize(AppPermissions.Pages_<#=PluralEntityName#>)]
+    public class <#=PluralEntityName#>Controller : AdminControllerBase
+    {
+        private readonly I<#=EntityName#>AppService _<#=entityName#>AppService;
+
+        public <#=PluralEntityName#>Controller(I<#=EntityName#>AppService <#=entityName#>AppService)
+        {
+            _<#=entityName#>AppService = <#=entityName#>AppService;
+        }
+
+        public ActionResult Index()
+        {
+            return View();
+        }
+
+        //[AbpMvcAuthorize(AppPermissions.Pages_<#=PluralEntityName#>_Create, AppPermissions.Pages_<#=PluralEntityName#>_Edit)]
+        public async Task<PartialViewResult> CreateOrEditModal(int? id)
+        {
+            var output = await _<#=entityName#>AppService.Get<#=EntityName#>ForEdit(new NullableIdDto { Id = id });
+            var viewModel = new CreateOrEdit<#=EntityName#>ModalViewModel(output);
+
+            return PartialView("_CreateOrEditModal", viewModel);
+        }
+    }
+}

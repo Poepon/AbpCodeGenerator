@@ -3,3 +3,9 @@
 ################################################################################
 
 /packages
+/.vs/Poepon.AbpCodeGenerator/v14
+/.vs
+/Poepon.AbpCodeGenerator.Core/bin/Release
+/Poepon.AbpCodeGenerator.Core/obj/Release
+/Poepon.AbpCodeGenerator.VSIX/bin/Release
+/Poepon.AbpCodeGenerator.VSIX/obj/Release

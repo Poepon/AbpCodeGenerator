@@ -1,0 +1,17 @@
+﻿<#@ assembly name="System.Core" #>
+<#@ assembly name="System.Data.Linq" #>
+<#@ ScaffoldingAssembly Processor="ScaffoldingAssemblyLoader" #>
+<#@ import namespace="System.Collections" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="Microsoft.AspNet.Scaffolding.Core.Metadata" #>
+<#@ import namespace="Poepon.AbpCodeGenerator.Core.Models" #>
+<#@ parameter type="System.String" name="AppName" #>
+<#@ parameter type="System.String" name="EntityFolerName" #>
+<#@ parameter type="System.String" name="PluralEntityName" #>
+<#@ parameter type="System.String" name="EntityNamespace" #>
+<#@ parameter type="System.String" name="EntityName" #>
+<#@ parameter type="System.String" name="EntityPrimaryKeyType" #>
+<#@ parameter type="System.String" name="FunctionName" #>
+<#@ parameter type="System.String" name="DtoNamespace" #>
+<#@ parameter type="Poepon.AbpCodeGenerator.Core.Models.MetaTableInfo" name="DtoMetaTable" #>

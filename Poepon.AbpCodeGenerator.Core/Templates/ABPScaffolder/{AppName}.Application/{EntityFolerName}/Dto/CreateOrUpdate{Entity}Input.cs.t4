@@ -1,0 +1,13 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../../Module.t4" #>
+<#@ output extension="cs" #>
+using System.ComponentModel.DataAnnotations;
+
+namespace <#= AppName #>.<#=EntityFolerName#>.Dto
+{
+    public class CreateOrUpdate<#= EntityName #>Input
+    {
+        [Required]
+        public <#= EntityName #>EditDto <#= EntityName #> { get; set; }
+    }
+}

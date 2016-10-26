@@ -1,0 +1,117 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../../../../../../Web.t4" #>
+<#@ include file="../../../../../../../CSharpHelpers.t4" #>
+<#@ output extension="js" #>
+<#
+    var entityName = ToCamelCase(EntityName);
+	var pluralEntityName = ToCamelCase(PluralEntityName);
+#>
+(function () {
+    $(function () {
+
+        var _$<#=pluralEntityName#>Table = $('#<#=PluralEntityName#>Table');
+        var _<#=entityName#>Service = abp.services.app.<#=entityName#>;
+
+        var _permissions = {
+            create: abp.auth.hasPermission('<#=PluralEntityName#>.Create'),
+            edit: abp.auth.hasPermission('<#=PluralEntityName#>.Edit'),
+            'delete': abp.auth.hasPermission('<#=PluralEntityName#>.Delete')
+        };
+
+        var _createOrEditModal = new app.ModalManager({
+            viewUrl: abp.appPath + 'Admin/<#=PluralEntityName#>/CreateOrEditModal',
+            scriptUrl: abp.appPath + 'view-resources/Areas/Admin/Views/<#=PluralEntityName#>/_CreateOrEditModal.js',
+            modalClass: 'CreateOrEdit<#=EntityName#>Modal'
+        });
+
+        _$<#=pluralEntityName#>Table.jtable({
+
+            title: app.localize('<#=PluralEntityName#>'),
+
+            actions: {
+                listAction: {
+                    method: _<#=entityName#>Service.getGet<#=EntityName#>PagedList
+                }
+            },
+
+            fields: {
+                id: {
+                    key: true,
+                    list: false
+                },
+                actions: {
+                    title: app.localize('Actions'),
+                    width: '25%',
+                    display: function (data) {
+                        var $span = $('<span></span>');
+
+                        if (_permissions.edit) {
+                            $('<button class="btn btn-default btn-xs" title="' + app.localize('Edit') + '"><i class="fa fa-edit"></i></button>')
+                                .appendTo($span)
+                                .click(function () {
+                                    _createOrEditModal.open({ id: data.record.id });
+                                });
+                        }
+
+                        if (_permissions.delete) {
+                            $('<button class="btn btn-default btn-xs" title="' + app.localize('Delete') + '"><i class="fa fa-trash-o"></i></button>')
+                                .appendTo($span)
+                                .click(function () {
+                                    delete<#=EntityName#>(data.record);
+                                });
+                        }
+
+                        return $span;
+                    }
+                },
+            <#
+			foreach (MetaColumnInfo column in DtoMetaTable.Columns)
+			{
+			if (!column.IsDtoVisible) continue;
+			#>
+				 <#=ToCamelCase(column.Name)#>: {
+                    title:"<#=column.DisplayName#>"
+                },
+			<#
+			}
+			#>
+            }
+
+        });
+
+        function delete<#=EntityName#>(<#=entityName#>) {
+            abp.message.confirm(
+                app.localize('<#=EntityName#>DeleteWarningMessage', <#=entityName#>.name),
+                function (isConfirmed) {
+                    if (isConfirmed) {
+                        _<#=entityName#>Service.delete<#=EntityName#>({
+                            id: <#=entityName#>.id
+                        }).done(function () {
+                            get<#=PluralEntityName#>();
+                            abp.notify.success(app.localize('SuccessfullyDeleted'));
+                        });
+                    }
+                }
+            );
+        };
+
+        $('#CreateNew<#=EntityName#>Button').click(function () {
+            _createOrEditModal.open();
+        });
+
+        $('#Refresh<#=PluralEntityName#>Button').click(function (e) {
+            e.preventDefault();
+            get<#=PluralEntityName#>();
+        });
+
+        function get<#=PluralEntityName#>() {
+            _$<#=pluralEntityName#>Table.jtable('load', {});
+        }
+
+        abp.event.on('app.createOrEdit<#=EntityName#>ModalSaved', function () {
+            get<#=PluralEntityName#>();
+        });
+
+        get<#=PluralEntityName#>();
+    });
+})();

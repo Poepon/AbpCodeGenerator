@@ -1,0 +1,11 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../../Module.t4" #>
+<#@ output extension="cs" #>
+
+namespace <#= AppName #>.<#=EntityFolerName#>.Dto
+{
+    public class Get<#=EntityName#>ForEditOutput
+    {
+        public <#=EntityName#>EditDto <#=EntityName#> { get; set; }
+    }
+}

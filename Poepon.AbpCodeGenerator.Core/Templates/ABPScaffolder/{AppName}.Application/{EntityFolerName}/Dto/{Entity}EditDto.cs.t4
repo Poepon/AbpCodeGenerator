@@ -1,0 +1,57 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../../Module.t4" #>
+<#@ output extension="cs" #>
+using System;
+using System.ComponentModel.DataAnnotations;
+using Abp.Application.Services.Dto;
+using Abp.Domain.Entities;
+using Abp.Domain.Entities.Auditing;
+using Abp.AutoMapper;
+using <#= EntityNamespace #>;
+
+namespace <#= AppName #>.<#=EntityFolerName#>.Dto
+{
+<#
+        if (!string.IsNullOrWhiteSpace(FunctionName)){
+#>
+    /// <summary>
+    /// <#= FunctionName #>
+    /// </summary>
+<#
+        }
+#>
+    [AutoMap(typeof(<#= EntityName #>))]
+    public class <#= EntityName #>EditDto : EntityDto<<#=EntityPrimaryKeyType#>?>
+    {
+<#
+    foreach (MetaColumnInfo column in DtoMetaTable.Columns) {
+        if (!column.IsDtoVisible) continue;
+#>
+<#
+        if (column.DisplayName != column.Name){
+#>
+        /// <summary>
+        /// <#= column.DisplayName #>
+        /// </summary>
+<#
+        }
+#>
+<#
+        if (column.Required){
+#>
+        [Required]
+<#      }
+
+        if (column.HasMetaAttribute){
+#>
+        <#= column.MetaAttribute #>
+<#
+        }
+#>
+        public <#= column.strDataType #> <#= column.Name #> { get; set; }
+
+<#
+    }
+#>
+    }
+}

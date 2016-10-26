@@ -1,0 +1,21 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../../Module.t4" #>
+<#@ output extension="cs" #>
+using Abp.Runtime.Validation;
+using <#=AppName#>.Dto;
+namespace <#= AppName #>.<#=EntityFolerName#>.Dto
+{
+    public class Get<#=EntityName#>ListInput : PagedAndSortedInputDto, IShouldNormalize
+    {
+        /// <summary>
+        /// 规格化输入参数值
+        /// </summary>
+        public virtual void Normalize()
+        {
+            if (string.IsNullOrEmpty(Sorting))
+            {
+                Sorting = "Id";
+            }
+        }
+    }
+}

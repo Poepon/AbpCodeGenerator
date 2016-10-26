@@ -1,0 +1,35 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../Module.t4" #>
+<#@ include file="../CSharpHelpers.t4" #>
+<#@ output extension="cs" #>
+<#
+    var entityName = ToCamelCase(EntityName);
+#>
+        //TODO:★请将以下内容剪切到AppPermissions.cs
+		/*
+			// <#= FunctionName #>管理权限
+			public const string <#= PluralEntityName #> = "<#= PluralEntityName #>";
+			public const string <#= PluralEntityName #>_Create = "<#= PluralEntityName #>.Create";
+			public const string <#= PluralEntityName #>_Edit = "<#= PluralEntityName #>.Edit";
+			public const string <#= PluralEntityName #>_Delete = "<#= PluralEntityName #>.Delete";
+		*/
+
+		//TODO:★请将以下内容剪切到AppAuthorizationProvider.cs
+		/*
+			//<#= FunctionName #>管理
+			var <#= entityName #> = administration.CreateChildPermission(AppPermissions.<#= PluralEntityName #>, L("<#= PluralEntityName #>"));
+			<#= entityName #>.CreateChildPermission(AppPermissions.<#= PluralEntityName #>_Create, L("Create<#= EntityName #>"));
+			<#= entityName #>.CreateChildPermission(AppPermissions.<#= PluralEntityName #>_Edit, L("Edit<#= EntityName #>"));
+			<#= entityName #>.CreateChildPermission(AppPermissions.<#= PluralEntityName #>_Delete, L("Delete<#= EntityName #>"));
+
+		*/
+
+		//TODO:★请将以下内容剪切到语言包
+		/*
+			<!-- <#= FunctionName #>管理 -->
+			<text name="<#= PluralEntityName #>" value="<#= FunctionName #>管理" />
+			<text name="Create<#= EntityName #>" value="新增<#= FunctionName #>" />
+			<text name="Edit<#= EntityName #>" value="更新<#= FunctionName #>" />
+			<text name="Delete<#= EntityName #>" value="删除<#= FunctionName #>" />
+
+		*/

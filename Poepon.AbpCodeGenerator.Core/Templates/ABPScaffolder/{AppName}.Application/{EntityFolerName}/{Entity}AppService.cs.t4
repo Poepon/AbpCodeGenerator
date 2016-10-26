@@ -1,0 +1,134 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../Module.t4" #>
+<#@ include file="../../CSharpHelpers.t4" #>
+<#
+    var entityName = ToCamelCase(EntityName);
+#>
+<#@ output extension="cs" #>
+
+using System;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data.Entity;
+using Abp;
+using Abp.UI;
+using Abp.Application.Services.Dto;
+using Abp.Authorization;
+using Abp.AutoMapper;
+using Abp.Configuration;
+using Abp.Domain.Repositories;
+using Abp.Domain.Uow;
+using Abp.Extensions;
+using System.Linq.Dynamic;
+using Abp.Linq.Extensions;
+using Newtonsoft.Json;
+using <#= EntityNamespace #>;
+using <#= AppName #>.<#=EntityFolerName#>.Dto;
+
+namespace <#= AppName #>.<#=EntityFolerName#>
+{
+    //[AbpAuthorize(<#= EntityFolerName #>Permissions.<#= PluralEntityName #>)]
+    public class <#= EntityName #>AppService : <#= AppName #>AppServiceBase, I<#= EntityName #>AppService
+    {
+        private readonly IRepository<<#= EntityName #>,<#=EntityPrimaryKeyType#>> _<#= entityName #>Repository;
+
+        public <#= EntityName #>AppService(
+            IRepository<<#= EntityName #>,<#=EntityPrimaryKeyType#>> <#= entityName #>Repository
+            )
+        {
+            _<#= entityName #>Repository = <#= entityName #>Repository;
+        }
+
+        #region <#= FunctionName #>管理
+
+        /// <summary>
+        /// 根据查询条件获取<#= FunctionName #>分页列表
+        /// </summary>
+        public async Task<PagedResultDto<<#= EntityName #>ListDto>> Get<#= EntityName #>PagedList(Get<#= EntityName #>ListInput input)
+        {
+				var query = _<#= entityName #>Repository.GetAll();
+                //TODO:根据传入的参数添加过滤条件
+
+				var <#= entityName #>Count=await query.CountAsync();
+
+				var entities = await query.OrderBy(input.Sorting).PageBy(input).ToListAsync();
+				return new PagedResultDto<<#= EntityName #>ListDto>(<#= entityName #>Count, entities.MapTo<<#= EntityName #>, <#= EntityName #>ListDto>());
+         }
+
+        /// <summary>
+        /// 获取<#= FunctionName #>
+        /// </summary>
+        public async Task<Get<#= EntityName #>ForEditOutput> Get<#= EntityName #>ForEdit(NullableIdDto<<#=EntityPrimaryKeyType#>> input)
+        {
+            <#= EntityName #>EditDto dto;
+            if (input.Id.HasValue)
+            {
+                dto = (await _<#= entityName #>Repository.GetAsync(input.Id.Value)).MapTo<<#= EntityName #>EditDto>();
+            }
+            else
+            {
+                dto = new <#= EntityName #>EditDto();
+            }
+            return new Get<#= EntityName #>ForEditOutput() { <#= EntityName #> = dto };
+        }
+
+        /// <summary>
+        /// 创建或更新<#= FunctionName #>
+        /// </summary>
+        public async Task CreateOrUpdate<#= EntityName #>(CreateOrUpdate<#= EntityName #>Input input)
+        {
+            if (input.<#= EntityName #>.Id == null)
+            {
+                await Create<#= EntityName #>(input);
+            }
+            else
+            {
+                await Update<#= EntityName #>(input);
+            }
+        }
+
+        /// <summary>
+        /// 创建<#= FunctionName #>
+        /// </summary>
+        //[AbpAuthorize(<#= EntityFolerName #>Permissions.<#= PluralEntityName #>_Create<#= EntityName #>)]
+        public virtual async Task Create<#= EntityName #>(CreateOrUpdate<#= EntityName #>Input input)
+        {
+            //if (await _<#= entityName #>Repository.IsExists<#= EntityName #>ByName(input.CategoryName))
+            //{
+            //    throw new UserFriendlyException(L("NameIsExists"));
+            //}
+            var entity = await _<#= entityName #>Repository.InsertAsync(input.<#= EntityName #>.MapTo<<#= EntityName #>>());
+        }
+
+        /// <summary>
+        /// 更新<#= FunctionName #>
+        /// </summary>
+        //[AbpAuthorize(<#= EntityFolerName #>Permissions.<#= PluralEntityName #>_Edit#= EntityName #>)]
+        public virtual async Task Update<#= EntityName #>(CreateOrUpdate<#= EntityName #>Input input)
+        {
+            //if (await _<#= entityName #>Repository.IsExists<#= EntityName #>ByName(input.CategoryName, input.Id))
+            //{
+            //    throw new UserFriendlyException(L("NameIsExists"));
+            //}
+			if (input.<#= EntityName #>.Id != null)
+            {
+				var entity = await _<#= entityName #>Repository.GetAsync(input.<#= EntityName #>.Id.Value);
+				await _<#= entityName #>Repository.UpdateAsync(input.<#= EntityName #>.MapTo(entity));
+			}
+        }
+
+        /// <summary>
+        /// 删除<#= FunctionName #>
+        /// </summary>
+        //[AbpAuthorize(<#= EntityFolerName #>Permissions.<#= PluralEntityName #>_Delete<#= EntityName #>)]
+        public async Task Delete<#= EntityName #>(EntityDto<<#=EntityPrimaryKeyType#>> input)
+        {
+            //TODO:删除前的逻辑判断，是否允许删除
+            await _<#= entityName #>Repository.DeleteAsync(input.Id);
+        }
+
+        #endregion
+
+    }
+}

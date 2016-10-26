@@ -1,0 +1,30 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../Web.t4" #>
+<#@ include file="../CSharpHelpers.t4" #>
+<#@ output extension="cs" #>
+<#
+    var entityName = ToCamelCase(EntityName);
+#>
+
+/*
+	//TODO: ★请将以下内容剪切到AdminNavigationProvider.cs
+	 .AddItem(new MenuItemDefinition(
+                    AdminPageNames.Common.<#=PluralEntityName#>,
+                    L("<#=PluralEntityName#>"),
+                    url: "Admin/<#=PluralEntityName#>",
+                    icon: "icon-globe",
+                    requiredPermissionName: AppPermissions.<#= PluralEntityName #>
+                    )
+                )
+
+	//TODO:★请将以下内容剪切到AdminPageNames.cs
+	public class AdminPageNames
+    {
+        public static class Common
+        {           
+            public const string <#=PluralEntityName#> = "<#=PluralEntityName#>";
+           
+        }
+    }
+
+*/

@@ -1,0 +1,24 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../../Module.t4" #>
+<#@ output extension="cs" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Data.Entity;
+using <#=AppName#>.IRepositories;
+using Abp.EntityFramework;
+using <#= EntityNamespace #>;
+
+namespace <#=AppName#>.EntityFramework.Repositories
+{
+    public class <#= EntityName #>Repository : <#= AppName #>RepositoryBase<<#= EntityName #>>, I<#= EntityName #>Repository
+    {
+        public <#= EntityName #>Repository(IDbContextProvider<<#= AppName #>DbContext> dbContextProvider)
+            : base(dbContextProvider)
+        {
+        }
+
+    }
+}

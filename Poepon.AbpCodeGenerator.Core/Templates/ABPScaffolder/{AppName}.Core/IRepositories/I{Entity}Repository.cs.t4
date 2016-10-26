@@ -1,0 +1,19 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../Module.t4" #>
+<#@ output extension="cs" #>
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using Abp.Domain.Repositories;
+using Abp.Extensions;
+using <#= EntityNamespace #>;
+
+namespace <#=AppName#>.IRepositories
+{
+    public interface I<#= EntityName #>Repository : IRepository<<#= EntityName #>>
+    {
+        
+    }
+}

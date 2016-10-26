@@ -1,0 +1,48 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../Module.t4" #>
+<#@ output extension="cs" #>
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using Abp.Application.Services;
+using Abp.Application.Services.Dto;
+using <#= AppName #>.<#=EntityFolerName#>.Dto;
+namespace <#= AppName #>.<#=EntityFolerName#>
+{
+    public interface I<#= EntityName #>AppService : IApplicationService
+    {
+        #region <#= FunctionName #>管理
+
+        /// <summary>
+        /// 根据查询条件获取<#= FunctionName #>分页列表
+        /// </summary>
+        Task<PagedResultDto<<#= EntityName #>ListDto>> Get<#= EntityName #>PagedList(Get<#= EntityName #>ListInput input);
+
+		/// <summary>
+        /// 获取<#= FunctionName #>
+        /// </summary>
+		Task<Get<#= EntityName #>ForEditOutput> Get<#= EntityName #>ForEdit(NullableIdDto<<#=EntityPrimaryKeyType#>> input);
+
+		/// <summary>
+        /// 创建或更新<#= FunctionName #>
+        /// </summary>
+		Task CreateOrUpdate<#= EntityName #>(CreateOrUpdate<#= EntityName #>Input input);
+
+		/// <summary>
+        /// 创建<#= FunctionName #>
+        /// </summary>
+		Task Create<#= EntityName #>(CreateOrUpdate<#= EntityName #>Input input);
+
+		/// <summary>
+        /// 更新<#= FunctionName #>
+        /// </summary>
+		Task Update<#= EntityName #>(CreateOrUpdate<#= EntityName #>Input input);
+
+        /// <summary>
+        /// 删除<#= FunctionName #>
+        /// </summary>
+        Task Delete<#= EntityName #>(EntityDto<<#=EntityPrimaryKeyType#>> input);
+
+        #endregion
+    }
+}

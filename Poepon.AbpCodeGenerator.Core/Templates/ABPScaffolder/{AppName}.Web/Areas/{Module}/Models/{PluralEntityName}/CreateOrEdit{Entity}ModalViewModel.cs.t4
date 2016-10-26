@@ -1,0 +1,21 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../../../../Web.t4" #>
+<#@ output extension="cs" #>
+using Abp.AutoMapper;
+using <#=DtoNamespace#>;
+
+namespace <#=AppName#>.Web.Areas.Admin.Models.<#=PluralEntityName#>
+{
+    [AutoMapFrom(typeof(Get<#=EntityName#>ForEditOutput))]
+    public class CreateOrEdit<#=EntityName#>ModalViewModel : Get<#=EntityName#>ForEditOutput
+    {
+        public CreateOrEdit<#=EntityName#>ModalViewModel(Get<#=EntityName#>ForEditOutput output)
+        {
+            output.MapTo(this);
+        }
+        public bool IsEditMode
+        {
+            get { return <#=EntityName#>.Id.HasValue; }
+        }
+    }
+}

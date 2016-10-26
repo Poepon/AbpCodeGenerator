@@ -1,0 +1,50 @@
+﻿<#@ template language="C#" HostSpecific="True" Debug="False" #>
+<#@ include file="../../../../../Web.t4" #>
+<#@ output extension="cshtml" #>
+@using <#=AppName#>.Authorization
+@using <#=AppName#>.Web.Areas.Admin.Startup
+@{
+    ViewBag.CurrentPageName = AdminPageNames.Common.<#=PluralEntityName#>;
+}
+@section Styles
+{
+    <environment names="Development">
+        <link rel="stylesheet" href="~/view-resources/Areas/Admin/Views/<#=PluralEntityName#>/Index.css" asp-append-version="true" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/view-resources/Areas/Admin/Views/<#=PluralEntityName#>/Index.min.css" asp-append-version="true" />
+    </environment>
+}
+@section Scripts
+{
+    <environment names="Development">
+        <script src="~/view-resources/Areas/Admin/Views/<#=PluralEntityName#>/_CreateOrEditModal.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Areas/Admin/Views/<#=PluralEntityName#>/Index.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/view-resources/Areas/Admin/Views/<#=PluralEntityName#>/_CreateOrEditModal.min.js" asp-append-version="true"></script>
+        <script src="~/view-resources/Areas/Admin/Views/<#=PluralEntityName#>/Index.min.js" asp-append-version="true"></script>
+    </environment>
+}
+<div class="row margin-bottom-5">
+    <div class="col-xs-6">
+        <div class="page-head">
+            <div class="page-title">
+                <h1>
+                    <span>@L("<#=PluralEntityName#>")</span> <small>@L("<#=PluralEntityName#>HeaderInfo")</small>
+                </h1>
+            </div>
+        </div>
+    </div>
+    <div class="col-xs-6 text-right">
+        @if (IsGranted(AppPermissions.<#=PluralEntityName#>_Create))
+        {
+            <button id="CreateNew<#=EntityName#>Button" class="btn btn-primary blue"><i class="fa fa-plus"></i> @L("CreateNew<#=EntityName#>")</button>
+        }
+    </div>
+</div>
+<div class="portlet light margin-bottom-0">
+    <div class="portlet-body">
+        <div id="<#=PluralEntityName#>Table"></div>
+    </div>
+</div>

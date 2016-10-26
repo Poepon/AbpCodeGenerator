@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
+  <Metadata>
+    <Identity Id="Poepon.AbpCodeGenerator.VSIX.Company.f8924f28-462d-4599-a3a2-1db2db3c841c" Version="1.0" Language="zh-CN" Publisher="Poepon" />
+    <DisplayName>Poepon.AbpCodeGenerator.VSIX</DisplayName>
+    <Description xml:space="preserve">ABP代码生成器。</Description>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Enterprise" Version="[14.0]" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" d:Source="Manual" Version="[4.5,)" />
+  </Dependencies>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" d:Source="Project" d:ProjectName="Poepon.AbpCodeGenerator.Core" Path="|Poepon.AbpCodeGenerator.Core|" />
+  </Assets>
+</PackageManifest>

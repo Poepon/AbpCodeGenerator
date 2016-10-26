@@ -1,0 +1,144 @@
+﻿<#+
+    public string ToCamelCase(string str)
+    {
+        if (string.IsNullOrWhiteSpace(str))
+        {
+            return str;
+        }
+
+        if (str.Length == 1)
+        {
+            return str.ToLower();
+        }
+
+        return char.ToLower(str[0]) + str.Substring(1);
+    }
+
+    public string GetColAttr(MetaColumnInfo col)
+    {
+        var colName = col.Name.ToLower();
+        var strDataType = col.strDataType.ToLower();
+        var ret = "";
+        if (colName.EndsWith("isactive")){
+            return ", width: \"80px\", className: \"center\", render: abp.grid.renderIsActive";
+        }
+        else if (colName.EndsWith("picurl")){
+            return ", width: \"120px\", render: abp.grid.renderImg('100px', 'auto')";
+        }
+        else if (strDataType.StartsWith("datetime")){
+            if (colName.EndsWith("date")){
+                return ", width: \"100px\", render: abp.grid.renderDate";
+            }
+            else {
+                return ", width: \"180px\", render: abp.grid.renderDateTime";
+            }
+        }
+        else if (strDataType.StartsWith("bool")){
+            return ", width: \"60px\", className: \"center\", render: abp.grid.renderBool";
+        }
+
+        return ret;
+    }
+
+    public string GetFormControlLabel(MetaColumnInfo col)
+    {
+        var lbl = col.DisplayName + "：";
+        if (col.Required)
+            lbl += "<span class=\"asterisk\">*</span>";
+        return lbl;
+    }
+
+    public string GetFormControlValue(MetaColumnInfo col)
+    {
+        var str = col.Name;
+        if (col.strDataType.ToLower().StartsWith("datetime"))
+            str += ".ToShortString()";
+        return str;
+    }
+
+    public string GetFormControlCssClass(MetaColumnInfo col)
+    {
+        var str = "";
+        if (col.Required)
+            str = " required";
+        if (col.strDataType.ToLower().StartsWith("datetime"))
+            str += " date-picker";
+        return str;
+    }
+
+    public string GetFormRequiredAsterisk(MetaColumnInfo col)
+    {
+        if (col.Required)
+            return "<span class=\"asterisk\">*</span>";
+        return "";
+    }
+
+    public string GetFormControlRequired(MetaColumnInfo col)
+    {
+        if (col.Required)
+            return " data-rule-required=\"true\"";
+        return "";
+    }
+
+    public string GetFormControlMaxlength(MetaColumnInfo col)
+    {
+        if (col.MaxLength.HasValue)
+            return string.Format(" maxlength=\"{0}\"", col.MaxLength);
+        return "";
+    }
+
+    public string GetFormControlHelpText(MetaColumnInfo col)
+    {
+        var list = new List<string>();
+        if (col.Required){
+            list.Add("必填");
+        }
+        if (col.MaxLength.HasValue){
+            list.Add(string.Format("不超过{0}个字", col.MaxLength));
+        }
+        return string.Join("，", list);
+    }
+
+    public string GetDropDownListColName(MetaColumnInfo col)
+    {
+        var str = col.Name.Substring(0, col.Name.Length - 2) + "List";
+        return str;
+    }
+
+    public bool IsDropDownCol(MetaColumnInfo col){
+        if (IsGuidCol(col) && col.Name.EndsWith("Id")){
+            return true;
+        }
+        return false;
+    }
+
+    public bool IsGuidCol(MetaColumnInfo col){
+        return col.strDataType.ToLower().StartsWith("guid");
+    }
+
+    public bool IsFullWidthCol(MetaColumnInfo column){
+        return column.ControlType == euControlType.Textarea || column.ControlType == euControlType.TextEditor;
+    }
+
+    public void WriteColControl(MetaColumnInfo column, string indent)
+    {
+        if (column.ControlType == euControlType.Textarea) { #>
+<#= indent #>                        <textarea class="form-control input-xxlarge<#= GetFormControlCssClass(column) #>" rows="4" id="<#= column.Name #>" name="<#= column.Name #>"<#= GetFormControlMaxlength(column) #>>@Model.<#= GetFormControlValue(column) #></textarea>
+<#+     } else if (column.ControlType == euControlType.TextEditor) { #>
+<#= indent #>                        <script type="text/plain" id="<#= column.Name #>Editor" name="<#= column.Name #>" class="input-xxlarge" style="height:240px;">@Html.Raw(Model.<#= column.Name #>)</script>
+<#+     } else if (column.ControlType == euControlType.DropdownList) { #>
+<#= indent #>                        @Html.DropDownList("<#= column.Name #>", new SelectList(ViewBag.<#= GetDropDownListColName(column) #>, "Id", "Title", Model.<#= column.Name #>)<#= column.Nullable ? ", \"\"": "" #>, new { @class = "form-control w300<#= GetFormControlCssClass(column) #>" })
+<#+     } else if (column.ControlType == euControlType.Checkbox) { #>
+<#= indent #>                        <label style="line-height:25px;"><input class="ace" type="checkbox" id="<#= column.Name #>" name="<#= column.Name #>" value="1" @(Model.<#= column.Name #> ? "checked" : "") /><span class="lbl">是</span></label>
+<#+     } else if (column.ControlType == euControlType.Hidden) { #>
+<#= indent #>                        <input class="<#= GetFormControlCssClass(column) #>" type="hidden" id="<#= column.Name #>" name="<#= column.Name #>"<#= GetFormControlMaxlength(column) #> value="@Model.<#= GetFormControlValue(column) #>" />
+<#+     } else if (column.ControlType == euControlType.DateTimePicker) { #>
+<#= indent #>                        <input class="form-control date-picker inline w300<#= GetFormControlCssClass(column) #>" type="text" id="<#= column.Name #>" name="<#= column.Name #>"<#= GetFormControlMaxlength(column) #> value="@Model.<#= GetFormControlValue(column) #>" />
+<#+     } else if (column.ControlType == euControlType.DatePicker) { #>
+<#= indent #>                        <input class="form-control datetime-picker inline w300<#= GetFormControlCssClass(column) #>" type="text" id="<#= column.Name #>" name="<#= column.Name #>"<#= GetFormControlMaxlength(column) #> value="@Model.<#= GetFormControlValue(column) #>" />
+<#+     } else { #>
+<#= indent #>                        <input class="form-control inline w300<#= GetFormControlCssClass(column) #>" type="text" id="<#= column.Name #>" name="<#= column.Name #>"<#= GetFormControlMaxlength(column) #> value="@Model.<#= GetFormControlValue(column) #>" />
+<#+
+        }
+    }
+#>
