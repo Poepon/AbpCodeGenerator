@@ -7,12 +7,14 @@
 <#@ output extension="cs" #>
 
 using System;
+using System.Collections.Generic;
+using System.Data.Entity;
+using System.Diagnostics;
 using System.Linq;
+using System.Linq.Dynamic;
 using System.Text;
 using System.Threading.Tasks;
-using System.Data.Entity;
 using Abp;
-using Abp.UI;
 using Abp.Application.Services.Dto;
 using Abp.Authorization;
 using Abp.AutoMapper;
@@ -20,8 +22,8 @@ using Abp.Configuration;
 using Abp.Domain.Repositories;
 using Abp.Domain.Uow;
 using Abp.Extensions;
-using System.Linq.Dynamic;
 using Abp.Linq.Extensions;
+using Abp.UI;
 using Newtonsoft.Json;
 using <#= EntityNamespace #>;
 using <#= AppName #>.<#=EntityFolerName#>.Dto;
@@ -53,8 +55,18 @@ namespace <#= AppName #>.<#=EntityFolerName#>
 				var <#= entityName #>Count=await query.CountAsync();
 
 				var entities = await query.OrderBy(input.Sorting).PageBy(input).ToListAsync();
-				return new PagedResultDto<<#= EntityName #>ListDto>(<#= entityName #>Count, entities.MapTo<<#= EntityName #>, <#= EntityName #>ListDto>());
+				var dtos = entities.MapTo<List<<#= EntityName #>ListDto>>();
+				return new PagedResultDto<<#= EntityName #>ListDto>(<#= entityName #>Count, dtos);
          }
+
+		 /// <summary>
+        /// 根据查询条件获取<#= FunctionName #>列表
+        /// </summary>
+		 public async Task<ListResultDto<<#= EntityName #>ListDto>> Get<#= EntityName #>List(Get<#= EntityName #>ListInput input)
+        {
+            var entities = await _<#= entityName #>Repository.GetAll().ToListAsync();
+            return new ListResultDto<<#= EntityName #>ListDto>(entities.MapTo<List<<#= EntityName #>ListDto>>());
+        }
 
         /// <summary>
         /// 获取<#= FunctionName #>

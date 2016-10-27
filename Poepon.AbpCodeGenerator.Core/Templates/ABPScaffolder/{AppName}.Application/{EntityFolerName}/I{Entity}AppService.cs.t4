@@ -19,6 +19,11 @@ namespace <#= AppName #>.<#=EntityFolerName#>
         Task<PagedResultDto<<#= EntityName #>ListDto>> Get<#= EntityName #>PagedList(Get<#= EntityName #>ListInput input);
 
 		/// <summary>
+        /// 根据查询条件获取<#= FunctionName #>列表
+        /// </summary>
+		Task<ListResultDto<<#= EntityName #>ListDto>> Get<#= EntityName #>List(Get<#= EntityName #>ListInput input);
+
+		/// <summary>
         /// 获取<#= FunctionName #>
         /// </summary>
 		Task<Get<#= EntityName #>ForEditOutput> Get<#= EntityName #>ForEdit(NullableIdDto<<#=EntityPrimaryKeyType#>> input);
